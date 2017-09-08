@@ -104,13 +104,16 @@ const conditions = choose([
 //============================
 // Bootstrap
 //============================
-app.use(function(req, res, next) {
-	conditions({req, res, next})
-		.either(
-			l => res.status(404).end(),
-			r => r.fork(
-				err => res.status(500).end(),
-				ok => res.end()
+const loadApp = webPart =>
+	app.use(function(req, res, next) {
+		webPart({req, res, next})
+			.either(
+				l => res.status(404).end(),
+				r => r.fork(
+					err => res.status(500).end(),
+					ok => res.end()
+				)
 			)
-		)
-})
+	})
+
+loadApp(conditions)

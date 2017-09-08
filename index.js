@@ -33,12 +33,13 @@ const then = x => R.map(R.map(x))
 // Responses
 //============================
 
-//:: String -> WebPart
-const OK = s => ({req, res, next}) =>
-	Either.of(Future.of(
-		res.send(s)
-	))
+//:: Number -> String -> WebPart
+const writer = code => s => ({req, res, next}) =>
+	Either.of(Future.of(res.status(code).send(s)))
 
+const OK = writer(200)
+const CREATED = writer(201)
+const NOT_FOUND = writer(404)
 
 //============================
 // Filters
@@ -52,6 +53,11 @@ const methodFilter = method => ({req, res, next}) =>
 
 const GET = methodFilter('GET')
 const POST = methodFilter('POST')
+
+const path = p => ({req, res, next}) =>
+	req.path === p
+		? pure({req, res, next})
+		: fail()
 
 //============================
 // Introspection
@@ -67,8 +73,12 @@ const request = fn => ({req, res, next}) => fn(req)({req, res, next})
 //[WebPart] -> WebPart
 const choose = ([h, ...t]) => 
 	({req, res, next}) => {
-		const result = h({req, res, next})
-		return result.isRight ? result : choose(t)({req, res, next})
+		if (h) {
+			const result = h({req, res, next})
+			return result.isRight ? result : choose(t)({req, res, next})
+		} else {
+			return fail()
+		}
 	}
 
 //============================
@@ -101,6 +111,11 @@ const conditions = choose([
 	R.compose( then(OK('Hello POST')), POST )
 ])
 
+const paths = choose([
+	R.compose( then(OK('Hello')), path('/hello') ),
+	R.compose( then(OK('Goodbye')), path('/goodbye') )
+])
+
 //============================
 // Bootstrap
 //============================
@@ -116,4 +131,4 @@ const loadApp = webPart =>
 			)
 	})
 
-loadApp(conditions)
+loadApp(paths)

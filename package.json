@@ -1,0 +1,21 @@
+{
+  "name": "suavejs",
+  "version": "1.0.0",
+  "description": "a suave port to js",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "watch": "nodemon ./index.js"
+  },
+  "author": "Reid Evans",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "ramda": "^0.24.1",
+    "ramda-fantasy": "^0.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.0"
+  }
+}

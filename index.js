@@ -3,6 +3,9 @@
 const R = require('ramda')
 const { Future, Either } = require('ramda-fantasy')
 
+//============================
+// Express stuff
+//============================
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
@@ -15,9 +18,13 @@ app.listen(port, function () {
 	console.log(`Listening on ${port}`)
 })
 
+
+//============================
+// Helpers
+//============================
+
 //:: Request -> Either 404 (Future 500 a)
 const WebPart = function(request) { }
-
 const fail = () => Either.Left(Future.of({}))
 const pure = x => Either.of(Future.of(x))
 const then = x => R.map(R.map(x))

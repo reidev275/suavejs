@@ -1,8 +1,11 @@
-const { Future, Either } = require('ramda-fantasy')
+const { WebPart, pure } = require('./WebPart')
 
 //:: Number -> String -> WebPart
-const writer = code => s => ({req, res, next}) =>
-	Either.of(Future.of(res.status(code).send(s)))
+const writer = code => s => 
+	new WebPart(ctx =>
+		pure(ctx.res.status(code).send(s))
+	)
+
 
 const OK = writer(200)
 const CREATED = writer(201)

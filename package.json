@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
+    "watch:tests": "nodemon --watch . --exec 'mocha || true'",
     "start": "nodemon ./index.js"
   },
   "author": "Reid Evans",
@@ -16,6 +17,7 @@
     "ramda-fantasy": "^0.8.0"
   },
   "devDependencies": {
+    "mocha": "^3.5.3",
     "nodemon": "^1.12.0"
   }
 }

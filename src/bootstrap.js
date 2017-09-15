@@ -10,16 +10,17 @@ app.listen(port, function () {
 	console.log(`Listening on ${port}`)
 })
 
-const loadApp = webPart =>
+const loadApp = webPart => {
 	app.use(function(req, res, next) {
-		webPart({req, res, next})
+		webPart.run({req, res, next})
 			.either(
 				l => res.status(404).end(),
 				r => r.fork(
 					err => res.status(500).end(),
-					ok => res.end()
+					ok => res.end() 
 				)
 			)
 	})
+}
 
 module.exports = { loadApp }

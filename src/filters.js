@@ -1,4 +1,4 @@
-const { compose, map } = require('ramda')
+const { compose, find, map } = require('ramda')
 const { WebPart, pure, fail } = require('./WebPart') 
 
 //:: Method -> WebPart
@@ -9,13 +9,10 @@ const methodFilter = method =>
 			: fail(context)
 	)
 
-
-const Method = 
-	{ GET : methodFilter('GET')
-	, PUT : methodFilter('PUT')
-	, POST : methodFilter('POST')
-	, DELETE : methodFilter('DELETE')
-	}
+const GET = methodFilter('GET')
+const PUT = methodFilter('PUT')
+const POST = methodFilter('POST')
+const DELETE = methodFilter('DELETE')
 
 
 //:: String -> WebPart
@@ -26,17 +23,13 @@ const path = p =>
 			: fail(context)
 	)
 
-//[WebPart] -> WebPart
-// const choose = ([h, ...t]) => 
-// 	({req, res, next}) => {
-// 		if (h) {
-// 			const result = h({req, res, next})
-// 			return result.isRight ? result : choose(t)({req, res, next})
-// 		} else {
-// 			return fail
-// 		}
-// 	}
-// 
-// const request = fn => ({req, res, next}) => fn(req)({req, res, next})
+//:: [WebPart] -> WebPart
+const choose = webParts => 
+	new WebPart(context => {
+		const match = find(x => x.run(context).isRight, webParts)
+		return match
+				? match.run(context)
+				: fail(context)
+	})
 
-module.exports = { Method, methodFilter, path }
+module.exports = { choose, GET, PUT, POST, DELETE, methodFilter, path }

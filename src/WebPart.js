@@ -20,8 +20,8 @@ WebPart.prototype.map = function(f) {
 	return new WebPart(compose(map(map(f)), wp.fn))
 }
 
-//a -> Either 404 (Future 500  b) -> Either 404 (Future 500 b)
-WebPart.prototype.chain = function(f) {
+//concat :: Semigroup a => a ~> a -> a
+WebPart.prototype.concat = function(f) {
 	const wp = this
 
 	return new WebPart(req => {
@@ -30,13 +30,16 @@ WebPart.prototype.chain = function(f) {
 			err => result = fail(err),
 			future => future.fork(
 				err => result = pure(err),
-				ctx => {
-					result = f.run(ctx)
-				}
+				ctx => result = f.run(ctx)
 			)
 		)
 		return result
 	})
+}
+
+//empty :: Monoid m => () -> m
+WebPart.empty = function() {
+	return new WebPart(pure)
 }
 
 WebPart.prototype.run = function(req) {

@@ -4,6 +4,6 @@ const { loadApp } = require('../src/bootstrap')
 
 const application = 
 	path('/hello')
-		.chain(OK('Hi, how are you?'))
+		.concat(OK('Hi, how are you?'))
 
 loadApp(application)

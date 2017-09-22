@@ -1,4 +1,5 @@
 const { WebPart, pure } = require('./WebPart')
+const { Either } = require('ramda-fantasy')
 
 //:: Number -> String -> WebPart
 const writer = code => s => 
@@ -6,9 +7,16 @@ const writer = code => s =>
 		pure(ctx.res.status(code).send(s))
 	)
 
-
 const OK = writer(200)
 const CREATED = writer(201)
 const NOT_FOUND = writer(404)
 
-module.exports = { OK, CREATED, NOT_FOUND }
+
+//:: (Request -> WebPart) -> WebPart
+const request = fn => 
+	new WebPart(ctx => fn(ctx.req).run(ctx)) 
+
+const async = future =>
+	new WebPart(x => Either.of(future))
+
+module.exports = { async, OK, CREATED, NOT_FOUND, request }

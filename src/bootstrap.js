@@ -17,7 +17,7 @@ const loadApp = webPart => {
 				l => res.status(404).end(),
 				r => r.fork(
 					err => res.status(500).end(),
-					ok => res.end() 
+					ok => res.send(ok).end() 
 				)
 			)
 	})

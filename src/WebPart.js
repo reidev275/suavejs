@@ -1,4 +1,4 @@
-const { compose, map } = require('ramda')
+const { compose, map, identity } = require('ramda')
 const { Either, Future } = require('ramda-fantasy')
 
 const pure = compose(Either.of, Future.of)
